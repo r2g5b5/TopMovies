@@ -1,6 +1,8 @@
 package com.example.topmovies;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +13,7 @@ import com.example.topmovies.request.Service;
 import com.example.topmovies.response.MovieSearchResponse;
 import com.example.topmovies.utils.Credentials;
 import com.example.topmovies.utils.MovieApi;
+import com.example.topmovies.viewmodel.MovieListViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,23 +24,34 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    private MovieListViewModel movieListViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        init();
+        observeChanges();
 
-        findViewById(R.id.mainBtn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //getRetrofitResponse();
-                getRetrofitById();
-            }
-        });
+
+
 
 
 
     }
 
+    private void observeChanges() {
+        movieListViewModel.getMovies().observe(MainActivity.this, new Observer<List<MovieModel>>() {
+            @Override
+            public void onChanged(List<MovieModel> movieModels) {
+
+            }
+        });
+    }
+
+    private void init() {
+        movieListViewModel= new ViewModelProvider(this).get(MovieListViewModel.class);
+    }
 
 
     private void getRetrofitResponse() {
