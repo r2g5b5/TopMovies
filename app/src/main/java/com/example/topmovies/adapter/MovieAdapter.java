@@ -11,10 +11,27 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.topmovies.R;
+import com.example.topmovies.model.MovieModel;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
+
+    private OnMovieListener onMovieListener;
+    private List<MovieModel> movieModels;
+
+    public void setMovieModels(List<MovieModel> movieModels) {
+        this.movieModels = movieModels;
+    }
+
+    public void setOnMovieListener(OnMovieListener onMovieListener) {
+        this.onMovieListener = onMovieListener;
+        notifyDataSetChanged();
+    }
+
+
 
     @NonNull
     @NotNull
@@ -31,7 +48,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return 0;
+        return movieModels.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
@@ -45,13 +62,22 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         private RatingBar ratingBar;
 
 
-        public ViewHolder(@NonNull @org.jetbrains.annotations.NotNull View itemView) {
+
+
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtTitle=itemView.findViewById(R.id.movie_row_txtTitle);
             txtDuration=itemView.findViewById(R.id.movie_row_txtDuration);
             txtCategory=itemView.findViewById(R.id.movie_row_txtCategory);
             imgMain=itemView.findViewById(R.id.movie_row_imageView);
             ratingBar=itemView.findViewById(R.id.movie_row_ratingBar);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onMovieListener.onMovieClicked(getAdapterPosition());
+                }
+            });
 
         }
     }
