@@ -33,4 +33,9 @@ public class MovieRepository {
     }
 
 
+    public void searchMovie(String query,int page){
+        movieApiClient.searchMovie(query,page);
+    }
+
+
 }

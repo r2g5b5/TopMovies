@@ -23,5 +23,9 @@ public class MovieListViewModel extends ViewModel {
         return movieRepository.getMovies();
     }
 
+    public void searchMovie(String query,int page){
+        movieRepository.searchMovie(query,page);
+    }
+
 
 }
