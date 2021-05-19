@@ -24,6 +24,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     private OnMovieListener onMovieListener;
     private List<MovieModel> movieModels=new ArrayList<>();
 
+
+
     public void setMovieModels(List<MovieModel> movieModels) {
         this.movieModels = movieModels;
         notifyDataSetChanged();
@@ -47,9 +49,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull @NotNull MovieAdapter.ViewHolder holder, int position) {
 
-        holder.txtTitle.setText(movieModels.get(position).getTitle());
-        holder.txtReleaseDate.setText(movieModels.get(position).getRelease_date());
-        holder.txtDuration.setText(movieModels.get(position).getLang());
         holder.ratingBar.setRating(movieModels.get(position).getVote_average());
         holder.ratingBar.setEnabled(false);
 
@@ -67,9 +66,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     class ViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView txtTitle;
-        private TextView txtDuration;
-        private TextView txtReleaseDate;
 
         private ImageView imgMain;
 
@@ -80,16 +76,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            txtTitle=itemView.findViewById(R.id.movie_row_txtTitle);
-            txtDuration=itemView.findViewById(R.id.movie_row_txtDuration);
-            txtReleaseDate=itemView.findViewById(R.id.movie_row_txtReleaseDate);
+
             imgMain=itemView.findViewById(R.id.movie_row_imageView);
             ratingBar=itemView.findViewById(R.id.movie_row_ratingBar);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onMovieListener.onMovieClicked(getAdapterPosition());
+                    onMovieListener.onMovieClicked(movieModels.get(getAdapterPosition()));
                 }
             });
 

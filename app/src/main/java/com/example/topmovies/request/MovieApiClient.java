@@ -25,11 +25,15 @@ import retrofit2.Response;
 
 public class MovieApiClient {
     private MutableLiveData<List<MovieModel>> movieMutableLiveData;
-
-    private static MovieApiClient instance;
-
     private RetrieveMoviesRunnable retrieveMoviesRunnable;
 
+
+    private MutableLiveData<List<MovieModel>> popularMovieMutableLiveData;
+    private RetrievePopularMoviesRunnable retrievePopularMoviesRunnable;
+
+
+
+    private static MovieApiClient instance;
     public static synchronized MovieApiClient getInstance(){
         if (instance==null){
             instance=new MovieApiClient();
@@ -39,10 +43,16 @@ public class MovieApiClient {
 
     private MovieApiClient(){
         movieMutableLiveData=new MutableLiveData<>();
+        popularMovieMutableLiveData=new MutableLiveData<>();
     }
+
 
     public LiveData<List<MovieModel>> getMovies(){
         return movieMutableLiveData;
+    }
+
+    public LiveData<List<MovieModel>> getPopularMovies(){
+        return popularMovieMutableLiveData;
     }
 
 
@@ -55,6 +65,26 @@ public class MovieApiClient {
 
 
         final Future myHandler= AppExecutors.getInstance().networkIO().submit(new RetrieveMoviesRunnable(query,page));
+
+        AppExecutors.getInstance().networkIO().schedule(new Runnable() {
+            @Override
+            public void run() {
+                myHandler.cancel(true);
+
+            }
+        },3500, TimeUnit.MILLISECONDS);
+
+    }
+
+
+    public void searchPopularMovie(int page){
+
+        if (retrievePopularMoviesRunnable!=null){
+            retrievePopularMoviesRunnable=null;
+        }
+
+
+        final Future myHandler= AppExecutors.getInstance().networkIO().submit(new RetrievePopularMoviesRunnable(page));
 
         AppExecutors.getInstance().networkIO().schedule(new Runnable() {
             @Override
@@ -124,6 +154,72 @@ public class MovieApiClient {
         }
 
     }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+    private class RetrievePopularMoviesRunnable implements Runnable{
+
+        private int pageNum;
+        private boolean cancelRequest;
+
+        public RetrievePopularMoviesRunnable( int pageNum) {
+
+            this.pageNum = pageNum;
+            this.cancelRequest = false;
+        }
+
+        @Override
+        public void run() {
+
+            try {
+                Response response=getPopularMovies(pageNum).execute();
+                if (cancelRequest){
+                    return;
+                }
+                if (response.code()==200){
+                    List<MovieModel> movieModelList=new ArrayList<>(((MovieSearchResponse)response.body()).getMovies());
+                    if (pageNum==1){
+                        popularMovieMutableLiveData.postValue(movieModelList);
+                    }else {
+                        List<MovieModel> currentMovie=popularMovieMutableLiveData.getValue();
+                        currentMovie.addAll(movieModelList);
+                        popularMovieMutableLiveData.postValue(currentMovie);
+                    }
+                }else {
+
+                    Log.d("Tag","MovieApiClient Error: "+response.errorBody().string());
+                    popularMovieMutableLiveData.postValue(null);
+                }
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                popularMovieMutableLiveData.postValue(null);
+            }
+
+            if (cancelRequest) {
+                return;
+            }
+        }
+
+        Call<MovieSearchResponse> getPopularMovies(int page){
+            return Service.getMovieApi().getPopularMovies(Credentials.API_KEY
+                    ,page);
+
+
+        }
+
+        private void setCancelRequest(){
+            cancelRequest=true;
+        }
+
+    }
+
+
+
 
 
 }

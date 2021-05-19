@@ -35,12 +35,23 @@ public class MovieRepository {
         return movieApiClient.getMovies();
     }
 
+    public LiveData<List<MovieModel>> getPopularMovies(){
+        return movieApiClient.getPopularMovies();
+    }
+
 
     public void searchMovie(String query,int page){
         this.query=query;
         this.page=page;
         movieApiClient.searchMovie(query,page);
     }
+
+    public void searchPopularMovie(int page){
+
+        this.page=page;
+        movieApiClient.searchPopularMovie(page);
+    }
+
 
     public void searchNextPage(){
         searchMovie(query,page+1);

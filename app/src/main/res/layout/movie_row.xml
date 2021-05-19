@@ -5,56 +5,26 @@
     android:id="@+id/movie_row_cardView"
     app:cardElevation="16dp"
     android:layout_height="317dp"
+    app:cardCornerRadius="35dp"
     android:layout_margin="8dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+       >
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="match_parent"
             android:scaleType="centerCrop"
             android:id="@+id/movie_row_imageView"
             android:src="@mipmap/ic_launcher"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            android:gravity="center"
-            android:layout_marginTop="8dp"
-            android:textSize="20sp"
-            android:textColor="@color/black"
-            android:id="@+id/movie_row_txtTitle"/>
-
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="90"
-                android:text="textView"
-                android:paddingStart="2dp"
-                android:gravity="start"
-                android:textSize="15sp"
-                android:id="@+id/movie_row_txtReleaseDate"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:text="textView"
-                android:gravity="center"
-                android:textSize="15sp"
-                android:id="@+id/movie_row_txtDuration"/>
-
-        </LinearLayout>
+            android:orientation="vertical"
+            android:layout_alignBottom="@id/movie_row_imageView"
+            >
 
         <RatingBar
             android:layout_marginTop="4dp"
@@ -66,7 +36,8 @@
             android:layout_marginEnd="14dp"
             android:id="@+id/movie_row_ratingBar"/>
 
+        </LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

@@ -9,7 +9,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 
@@ -35,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
     private Toolbar toolbar;
     private SearchView searchView;
 
+    private boolean isPopular=true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
         init();
         setSupportActionBar(toolbar);
         observeChanges();
+        observePopularMovies();
+        movieListViewModel.searchPopularMovie(1);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -65,6 +71,13 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
             }
         });
 
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isPopular=false;
+            }
+        });
+
 
 
 
@@ -72,7 +85,17 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
 
     }
 
+    private void observePopularMovies() {
+        movieListViewModel.getPopularMovies().observe(this, new Observer<List<MovieModel>>() {
+            @Override
+            public void onChanged(List<MovieModel> movieModels) {
+                if (movieModels!=null){
+                    adapter.setMovieModels(movieModels);
+                }
+            }
+        });
 
+    }
 
 
     private void observeChanges() {
@@ -102,8 +125,11 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
     }
 
     @Override
-    public void onMovieClicked(int position) {
-
+    public void onMovieClicked(MovieModel movieModel) {
+        Intent intent=new Intent(MainActivity.this,MovieDetailsActivity.class);
+        intent.putExtra("rating",movieModel.getVote_average());
+        intent.putExtra("movie",movieModel);
+        startActivity(intent);
     }
 
     @Override
