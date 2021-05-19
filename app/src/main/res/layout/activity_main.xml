@@ -21,11 +21,7 @@
             android:id="@+id/main_toolbar"
             >
 
-            <androidx.appcompat.widget.SearchView
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:queryHint="Search for a movie"
-                android:id="@+id/main_searchView"/>
+
 
 
 
@@ -34,9 +30,27 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/main_appbar"
+        android:text="Chose a Movie For Today"
+        android:id="@+id/textview"
+        android:textSize="50dp"/>
+
+    <androidx.appcompat.widget.SearchView
+
+        android:layout_width="match_parent"
+        android:layout_below="@id/textview"
+        android:layout_marginTop="4dp"
+        android:layout_height="?attr/actionBarSize"
+        app:queryHint="Search for a movie"
+        android:id="@+id/main_searchView"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_below="@id/main_appbar"
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/main_searchView"
         android:layout_height="match_parent"
         android:id="@+id/main_recyclerView"/>
 
