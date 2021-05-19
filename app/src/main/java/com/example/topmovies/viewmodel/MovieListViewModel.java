@@ -27,5 +27,9 @@ public class MovieListViewModel extends ViewModel {
         movieRepository.searchMovie(query,page);
     }
 
+    public void searchNextPage(){
+        movieRepository.searchNextPage();
+    }
+
 
 }

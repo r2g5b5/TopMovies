@@ -1,45 +1,67 @@
 package com.example.topmovies;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
+import android.widget.Toast;
 
+
+import com.example.topmovies.adapter.MovieAdapter;
+import com.example.topmovies.adapter.OnMovieListener;
 import com.example.topmovies.model.MovieModel;
-import com.example.topmovies.request.Service;
-import com.example.topmovies.response.MovieSearchResponse;
-import com.example.topmovies.utils.Credentials;
-import com.example.topmovies.utils.MovieApi;
+
 import com.example.topmovies.viewmodel.MovieListViewModel;
 
-import java.util.ArrayList;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMovieListener {
 
 
 
     private MovieListViewModel movieListViewModel;
+    private RecyclerView recyclerView;
+    private MovieAdapter adapter;
+    private Toolbar toolbar;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
+        setSupportActionBar(toolbar);
         observeChanges();
 
-
-        findViewById(R.id.mainBtn).setOnClickListener(new View.OnClickListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void onClick(View v) {
-                searchMovie("Fast",1);
+            public boolean onQueryTextSubmit(String query) {
+                movieListViewModel.searchMovie(query,1);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull @NotNull RecyclerView recyclerView, int newState) {
+                if (!recyclerView.canScrollHorizontally(1)){
+                movieListViewModel.searchNextPage();
+                }
             }
         });
 
@@ -50,9 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void searchMovie(String query,int page){
-        movieListViewModel.searchMovie(query,page);
-    }
+
 
 
     private void observeChanges() {
@@ -60,10 +80,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<MovieModel> movieModels) {
                 if (movieModels!=null){
-                    for (MovieModel movieModel:movieModels) {
-                        Log.d("MainTag","onChanged: "+movieModel.getTitle());
-
-                    }
+                   adapter.setMovieModels(movieModels);
                 }
 
 
@@ -73,7 +90,30 @@ public class MainActivity extends AppCompatActivity {
 
     private void init() {
         movieListViewModel= new ViewModelProvider(this).get(MovieListViewModel.class);
+        recyclerView=findViewById(R.id.main_recyclerView);
+        adapter=new MovieAdapter();
+        adapter.setOnMovieListener(this);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
+        recyclerView.setAdapter(adapter);
+        toolbar=findViewById(R.id.main_toolbar);
+        searchView=findViewById(R.id.main_searchView);
+
     }
+
+    @Override
+    public void onMovieClicked(int position) {
+
+    }
+
+    @Override
+    public void onCategoryClicked(int position) {
+
+    }
+
+
+
+
 
 /*
     private void getRetrofitResponse() {

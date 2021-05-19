@@ -16,6 +16,9 @@ public class MovieRepository {
 
     private static MovieRepository instance;
 
+    private String query;
+    private int page;
+
     public static synchronized MovieRepository getInstance(){
         if (instance==null){
             instance=new MovieRepository();
@@ -34,7 +37,13 @@ public class MovieRepository {
 
 
     public void searchMovie(String query,int page){
+        this.query=query;
+        this.page=page;
         movieApiClient.searchMovie(query,page);
+    }
+
+    public void searchNextPage(){
+        searchMovie(query,page+1);
     }
 
 

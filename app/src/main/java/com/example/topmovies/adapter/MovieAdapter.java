@@ -10,25 +10,28 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.topmovies.R;
 import com.example.topmovies.model.MovieModel;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
     private OnMovieListener onMovieListener;
-    private List<MovieModel> movieModels;
+    private List<MovieModel> movieModels=new ArrayList<>();
 
     public void setMovieModels(List<MovieModel> movieModels) {
         this.movieModels = movieModels;
+        notifyDataSetChanged();
     }
 
     public void setOnMovieListener(OnMovieListener onMovieListener) {
         this.onMovieListener = onMovieListener;
-        notifyDataSetChanged();
+
     }
 
 
@@ -44,6 +47,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull @NotNull MovieAdapter.ViewHolder holder, int position) {
 
+        holder.txtTitle.setText(movieModels.get(position).getTitle());
+        holder.txtReleaseDate.setText(movieModels.get(position).getRelease_date());
+        holder.txtDuration.setText(movieModels.get(position).getLang());
+        holder.ratingBar.setRating(movieModels.get(position).getVote_average());
+        holder.ratingBar.setEnabled(false);
+
+        Glide.with(holder.imgMain.getContext()).
+                load("https://image.tmdb.org/t/p/w500/"+movieModels.get(position).
+                        getPoster_path()).placeholder(R.mipmap.ic_launcher).
+                into(holder.imgMain);
+
     }
 
     @Override
@@ -55,7 +69,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
         private TextView txtTitle;
         private TextView txtDuration;
-        private TextView txtCategory;
+        private TextView txtReleaseDate;
 
         private ImageView imgMain;
 
@@ -68,7 +82,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             super(itemView);
             txtTitle=itemView.findViewById(R.id.movie_row_txtTitle);
             txtDuration=itemView.findViewById(R.id.movie_row_txtDuration);
-            txtCategory=itemView.findViewById(R.id.movie_row_txtCategory);
+            txtReleaseDate=itemView.findViewById(R.id.movie_row_txtReleaseDate);
             imgMain=itemView.findViewById(R.id.movie_row_imageView);
             ratingBar=itemView.findViewById(R.id.movie_row_ratingBar);
 
