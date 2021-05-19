@@ -24,6 +24,8 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+
+
     private MovieListViewModel movieListViewModel;
 
     @Override
@@ -34,16 +36,36 @@ public class MainActivity extends AppCompatActivity {
         observeChanges();
 
 
+        findViewById(R.id.mainBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchMovie("Fast",1);
+            }
+        });
+
+
 
 
 
 
     }
 
+    private void searchMovie(String query,int page){
+        movieListViewModel.searchMovie(query,page);
+    }
+
+
     private void observeChanges() {
         movieListViewModel.getMovies().observe(MainActivity.this, new Observer<List<MovieModel>>() {
             @Override
             public void onChanged(List<MovieModel> movieModels) {
+                if (movieModels!=null){
+                    for (MovieModel movieModel:movieModels) {
+                        Log.d("MainTag","onChanged: "+movieModel.getTitle());
+
+                    }
+                }
+
 
             }
         });
@@ -53,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         movieListViewModel= new ViewModelProvider(this).get(MovieListViewModel.class);
     }
 
-
+/*
     private void getRetrofitResponse() {
         MovieApi movieApi= Service.getMovieApi();
         Call<MovieSearchResponse> responseCall=movieApi.searchMovie(Credentials.API_KEY,
@@ -113,5 +135,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+ */
 
 }
