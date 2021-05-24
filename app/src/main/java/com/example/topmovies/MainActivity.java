@@ -132,10 +132,6 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
         startActivity(intent);
     }
 
-    @Override
-    public void onCategoryClicked(int position) {
-
-    }
 
 
 
